@@ -1,41 +1,35 @@
-interface ConfigObject {
-    className?: string,
-    interval?: number,
-    randomStart?: boolean
-}
-interface DefaultConfigObject extends ConfigObject {
-    className: string,
-    interval: number,
-    randomStart: boolean
-}
-
-export default class ClassNameToggle {
+export class ClassToggleHook {
     target: HTMLElement;
-    config: DefaultConfigObject = {
-        className: "alt",
-        interval: 200,
-        randomStart: false
-    }
-    intervalId: number = -1
+    toggleClassName: string;
 
-    constructor(target: HTMLElement, config?: ConfigObject) {
-        Object.assign(this.config, config)
+    constructor(target: HTMLElement, className?: string) {
+        this.toggleClassName = className || "alt"
         this.target = target;
-        let delay = 0
-        if (this.config.randomStart) {
-            delay = Math.round(Math.random() * this.config.interval)
-        }
-        setTimeout(() => {
-            this.intervalId = setInterval(() => {
-                this.toggleClass()
-            }, this.config.interval)
-        }, delay);
     };
-    toggleClass() {
-        const newClassName = this.target.className.replace(this.config.className, "")
-        if (this.target.className == newClassName) {
-            this.target.className += ` ${this.config.className}`
-        }
-        else this.target.className = newClassName
+
+    toggle() {
+        ClassToggleHook.toggleElementClass(this.target, this.toggleClassName)
+    }
+
+    static toggleElementClass(target: HTMLElement, className: string) {
+        const newClassName = target.className.replace(className, "")
+        if (target.className == newClassName) target.className += ` ${className}`
+        else target.className = newClassName
     }
 };
+
+export class ClassToggleInterval extends ClassToggleHook {
+    interval: number;
+    intervalId: number = -1;
+    constructor(target: HTMLElement, className?: string, interval?: number) {
+        super(target, className)
+        this.interval = interval || 200
+    }
+    start() {
+        this.intervalId = setInterval(() => this.toggle(), this.interval)
+    }
+    stop() {
+        clearInterval(this.intervalId);
+        this.intervalId = -1
+    }
+}
