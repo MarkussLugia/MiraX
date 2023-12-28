@@ -57,6 +57,7 @@ export class AlphaMatrix {
             this.data[index] = this.data[index].concat(deltaArray)
         }
         this.width += delta
+        return this
     }
     public extendLeft(delta: number) {
         const deltaArray = AlphaMatrix.emptyArray(delta)
@@ -64,6 +65,7 @@ export class AlphaMatrix {
             this.data[index] = deltaArray.concat(this.data[index])
         }
         this.width += delta
+        return this
     }
     public extendBottom(delta: number) {
         const deltaArray = new Array<number[]>(delta)
@@ -72,6 +74,7 @@ export class AlphaMatrix {
         }
         this.data = this.data.concat(deltaArray)
         this.height += delta
+        return this
     }
     public extendTop(delta: number) {
         const deltaArray = new Array<number[]>(delta)
@@ -80,12 +83,13 @@ export class AlphaMatrix {
         }
         this.data = deltaArray.concat(this.data)
         this.height += delta
+        return this
     }
     public extend(delta: number) {
-        this.extendLeft(delta)
-        this.extendRight(delta)
-        this.extendTop(delta)
-        this.extendBottom(delta)
+        return this.extendLeft(delta)
+            .extendRight(delta)
+            .extendTop(delta)
+            .extendBottom(delta)
     }
     public toImageData(r: number = 0, g: number = 0, b: number = 0): ImageData {
         const imageDataArray = new Uint8ClampedArray(this.width * this.height * 4)
@@ -114,6 +118,7 @@ export class AlphaMatrix {
         }
         const imageData = ctx.getImageData(0, 0, this.width, this.height)
         this.data = AlphaMatrix.imageDataToAlphaMatrix(imageData)
+        return this
     }
 }
 
@@ -153,6 +158,7 @@ export class BitMatrix {
             this.data[index] = this.data[index].concat(deltaArray)
         }
         this.width += delta
+        return this
     }
     public extendLeft(delta: number) {
         const deltaArray = BitMatrix.emptyArray(delta)
@@ -160,6 +166,7 @@ export class BitMatrix {
             this.data[index] = deltaArray.concat(this.data[index])
         }
         this.width += delta
+        return this
     }
     public extendBottom(delta: number) {
         const deltaArray = new Array<boolean[]>(delta)
@@ -168,6 +175,7 @@ export class BitMatrix {
         }
         this.data = this.data.concat(deltaArray)
         this.height += delta
+        return this
     }
     public extendTop(delta: number) {
         const deltaArray = new Array<boolean[]>(delta)
@@ -176,12 +184,13 @@ export class BitMatrix {
         }
         this.data = deltaArray.concat(this.data)
         this.height += delta
+        return this
     }
     public extend(delta: number) {
-        this.extendLeft(delta)
-        this.extendRight(delta)
-        this.extendTop(delta)
-        this.extendBottom(delta)
+        return this.extendLeft(delta)
+            .extendRight(delta)
+            .extendTop(delta)
+            .extendBottom(delta)
     }
     public toImageData(r: number = 0, g: number = 0, b: number = 0): ImageData {
         const imageDataArray = new Uint8ClampedArray(this.width * this.height * 4)
@@ -210,6 +219,7 @@ export class BitMatrix {
         }
         const imageData = ctx.getImageData(0, 0, this.width, this.height)
         this.data = BitMatrix.imageDataToBitMatrix(imageData)
+        return this
     }
     static round3Matrix: Array<number[]> = [
         [-1, -1], [+0, -1], [+1, -1],
@@ -261,6 +271,7 @@ export class BitMatrix {
 
             }
         }
+        return this
     }
     public smooth3() {
         for (let row = 0; row < this.height; row++) {
@@ -291,5 +302,6 @@ export class BitMatrix {
 
             }
         }
+        return this
     }
 }
